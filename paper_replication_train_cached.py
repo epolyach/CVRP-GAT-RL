@@ -82,7 +82,7 @@ def paper_replication_train_cached():
         os.makedirs(folder)
     
     # Model parameters - matching paper specifications  
-    node_input_dim = 3      # Paper: (x, y, demand/capacity) - NOTE: demand is now [1-10], capacity is 30
+    node_input_dim = 4      # Paper: (x, y, demand/capacity) - NOTE: demand is now [1-10], capacity is 30
     edge_input_dim = 1      # Distance
     hidden_dim = 128        # Paper specification
     edge_dim = 16          # Paper specification

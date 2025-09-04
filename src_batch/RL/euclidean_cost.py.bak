@@ -9,10 +9,9 @@ def euclidean_cost(static, actions, batch):
         num_nodes: int, the number of nodes in the problem (including the depot).
     """
     num_nodes = int(batch.x.size(0)/batch.num_graphs)
-    actual_batch_size = batch.num_graphs  # Use actual batch size instead of assuming
 
     # Reshape and transpose the static coordinates to match the expected dimensions
-    static = static.reshape(actual_batch_size, num_nodes, 2)
+    static = static.reshape(-1, num_nodes, 2)
     static = static.transpose(2, 1)
 
     # Get the coordinates of the nodes in the order they are visited according to actions
