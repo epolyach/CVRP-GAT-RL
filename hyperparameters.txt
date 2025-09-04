@@ -1,0 +1,141 @@
+================================================================================
+                    GAT+RL VRP MODEL HYPERPARAMETERS
+================================================================================
+Date: 2025-09-04
+Training Script: production_train_final.py
+Model: Graph Attention Network with Reinforcement Learning (GAT+RL)
+Task: Vehicle Routing Problem (VRP) with 20 nodes
+
+================================================================================
+PROBLEM CONFIGURATION
+================================================================================
+Number of nodes (N):                    20 (19 customers + 1 depot)
+Vehicle capacity:                       50
+Maximum customer demand:                10 (uniform random 1-10)
+Coordinate space:                       [0, 1] × [0, 1] (uniform random)
+
+================================================================================
+TRAINING CONFIGURATION
+================================================================================
+Number of epochs:                       101 (0-100)
+Batch size:                            512
+Batches per epoch:                     15
+Total training instances:              7,680 (512 × 15)
+Validation instances:                  1,000
+Random seed offset:                    Sequential (0 to 8679)
+
+================================================================================
+MODEL ARCHITECTURE - GAT ENCODER
+================================================================================
+Node input dimension:                   4 (x, y, demand/capacity, demand)
+Edge input dimension:                   1 (Euclidean distance)
+Hidden dimension:                       128
+Edge dimension:                         16
+Number of GAT layers:                  4
+Number of attention heads:              8
+Negative slope (LeakyReLU):           0.2
+Dropout rate:                          0.1
+Activation function:                   ReLU (after attention)
+Batch normalization:                   Yes (after linear transformation)
+Residual connections:                  Yes (around GAT layers)
+Weight initialization:                 Xavier uniform
+
+================================================================================
+MODEL ARCHITECTURE - DECODER
+================================================================================
+Decoder type:                          Pointer Attention Network
+Decoder hidden dimension:               128
+Attention heads (decoder):              8
+Context embedding:                     Graph mean pooling
+Masking strategy:                      Dynamic capacity-based
+Max decoding steps:                    40 (2 × number of nodes)
+
+================================================================================
+REINFORCEMENT LEARNING
+================================================================================
+RL Algorithm:                          REINFORCE with baseline
+Baseline type:                          Rollout baseline (greedy)
+Baseline update frequency:              Every 5 epochs
+Advantage calculation:                  cost - baseline_cost
+Action selection (training):            Sampling from categorical distribution
+Action selection (validation):          Greedy (argmax)
+Action selection (baseline):            Greedy
+
+================================================================================
+OPTIMIZATION
+================================================================================
+Optimizer:                              Adam
+Learning rate:                          1e-4 (0.0001)
+Gradient clipping:                      2.0 (max norm)
+Loss function:                          REINFORCE loss (policy gradient)
+Cost function:                          Euclidean distance + depot penalty
+Depot visit penalty:                    0.3 per extra depot visit
+
+================================================================================
+SAMPLING & TEMPERATURE
+================================================================================
+Temperature (training):                 2.5
+Temperature (validation):               1.0
+Temperature (baseline):                 1.0
+Sampling strategy:                      Categorical distribution with softmax
+
+================================================================================
+COMPUTATIONAL RESOURCES
+================================================================================
+Device:                                 NVIDIA RTX A6000
+CUDA version:                          12.1
+GPU memory available:                   47.40 GB
+GPU memory used (peak):                 ~4.2 GB
+PyTorch version:                       2.5.1+cu121
+PyTorch Geometric version:             2.6.1
+
+================================================================================
+TRAINING RESULTS
+================================================================================
+Initial training cost:                  15.134
+Final training cost:                    12.308
+Best training cost:                     12.090 (epoch 67)
+Improvement:                           18.7%
+Total training time:                    13.4 minutes (805 seconds)
+Average time per epoch:                 7.97 seconds
+GPU utilization average:                ~95%
+
+================================================================================
+DATA GENERATION
+================================================================================
+Instance generation:                    Random uniform
+Node coordinates:                       Uniform [0, 1]
+Demands:                               Uniform integer [1, 10]
+Graph structure:                       Fully connected
+Edge features:                         Euclidean distances
+Data normalization:                    Demand/capacity ratio
+
+================================================================================
+CHECKPOINTING & LOGGING
+================================================================================
+Checkpoint frequency:                   Every 10 epochs
+Best model saving:                     When validation improves
+Validation frequency:                   Every 5 epochs
+TensorBoard logging:                   Yes
+Log metrics:                          Loss, train cost, validation cost
+
+================================================================================
+FILE PATHS & OUTPUTS
+================================================================================
+Checkpoint directory:                   checkpoints/production_fixed_20250904_130349/
+Best model file:                       best_model.pt
+Training history:                      training_history.csv
+Figure output:                         gat_rl_paper_figure.png
+Log file:                              production_training_fixed.log
+
+================================================================================
+ADDITIONAL NOTES
+================================================================================
+- Model uses Graph Attention Networks (GAT) for encoding node and edge features
+- Decoder uses attention mechanism to select next node to visit
+- Dynamic masking ensures capacity constraints are respected
+- Baseline model is a copy of the actor network using greedy decoding
+- All computations run on GPU when available
+- Batch processing for efficient GPU utilization
+
+================================================================================

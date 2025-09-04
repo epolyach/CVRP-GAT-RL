@@ -1,0 +1,51 @@
+GAT+RL VRP HYPERPARAMETERS SUMMARY
+===================================
+
+PROBLEM SETUP:
+- Nodes: 20 (19 customers + 1 depot)
+- Vehicle capacity: 50
+- Customer demand: Uniform[1, 10]
+- Coordinates: Uniform[0, 1]²
+
+TRAINING:
+- Epochs: 101
+- Batch size: 512
+- Batches/epoch: 15
+- Training instances: 7,680
+- Validation instances: 1,000
+
+MODEL ARCHITECTURE:
+- GAT Encoder:
+  * Input dim: 4 (x, y, demand/capacity, demand)
+  * Hidden dim: 128
+  * Edge dim: 16
+  * GAT layers: 4
+  * Attention heads: 8
+  * Dropout: 0.1
+  * Activation: ReLU
+  * Residual connections: Yes
+
+- Decoder:
+  * Type: Pointer Attention
+  * Hidden dim: 128
+  * Max steps: 40
+
+REINFORCEMENT LEARNING:
+- Algorithm: REINFORCE with baseline
+- Baseline: Rollout (greedy)
+- Temperature: 2.5 (training), 1.0 (validation)
+- Action selection: Sampling (training), Greedy (validation)
+
+OPTIMIZATION:
+- Optimizer: Adam
+- Learning rate: 1e-4
+- Gradient clipping: 2.0
+- Depot penalty: 0.3
+
+RESULTS:
+- Initial cost: 15.134
+- Final cost: 12.308
+- Best cost: 12.090 (epoch 67)
+- Improvement: 18.7%
+- Training time: 13.4 minutes
+- GPU: NVIDIA RTX A6000 (47.4 GB)

@@ -1,0 +1,66 @@
+================================================================================
+ORIGINAL PARAMETERS FROM GIT REPOSITORY
+================================================================================
+Investigation Date: 2025-09-04
+Repository: GAT_RL (Graph Attention Network for Vehicle Routing Problem)
+
+================================================================================
+KEY FINDINGS FROM ORIGINAL CODE:
+================================================================================
+
+1. CAPACITY:
+   - Original hardcoded capacity: 3
+   - Location: src_batch/instance_creator/InstanceGenerator.py, line 57
+   - Code: load_capacity = 3  # Load capacity per vehicle
+   
+2. DEMAND DISTRIBUTION:
+   - Formula: np.random.randint(1, self.max_demand+1)/10
+   - max_demand parameter: 10 (from instance_loader.py)
+   - Actual demand range: 0.1 to 1.0 (after division by 10)
+   - Depot demand: 0
+   - Location: src_batch/instance_creator/InstanceGenerator.py, line 53
+
+3. INSTANCE CONFIGURATION (from instance_loader.py):
+   - n_customers: 20
+   - max_demand: 10 
+   - max_distance: 100
+   - num_instances: 100
+
+================================================================================
+DISCREPANCY WITH OUR TRAINING:
+================================================================================
+
+ORIGINAL CODE:
+- Capacity: 3
+- Demand: 0.1 to 1.0 (uniform random [1,10]/10)
+- Demand/Capacity ratio: 0.033 to 0.333
+
+OUR TRAINING (production_train_final.py):
+- Capacity: 50
+- Demand: 1 to 10 (uniform random integers)
+- Demand/Capacity ratio: 0.02 to 0.2
+
+================================================================================
+EXPLANATION:
+================================================================================
+The original code appears to be set up for a much smaller scale problem:
+- Small vehicle capacity (3 units)
+- Fractional demands (0.1 to 1.0)
+- This suggests the original setup was for testing/debugging
+
+Our training used more realistic parameters:
+- Larger vehicle capacity (50 units)
+- Integer demands (1-10 units)
+- Better suited for standard VRP benchmarks
+
+================================================================================
+RECOMMENDATION:
+================================================================================
+For consistency with standard VRP benchmarks and the paper results:
+- Continue using Capacity: 50
+- Continue using Demand: Uniform[1, 10] integers
+- These are more standard in VRP literature
+
+The original small capacity (3) was likely for initial testing and would not
+be practical for a 20-node problem with demands up to 1.0 per customer.
+================================================================================
