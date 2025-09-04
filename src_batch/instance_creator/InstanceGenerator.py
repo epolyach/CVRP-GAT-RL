@@ -21,8 +21,9 @@ class InMemoryDataset(torch.utils.data.Dataset):
         return self.data_list[idx]
     
 class InstanceGenerator:
-    def __init__(self, n_customers=5, n_vehicles=4, max_demand=10, max_distance=20, random_seed=42):
+    def __init__(self, n_customers=5, n_vehicles=4, max_demand=10, max_distance=20, vehicle_capacity=3, random_seed=42):
         self.n_customers = n_customers
+        self.vehicle_capacity = vehicle_capacity
         self.n_vehicles = n_vehicles
         self.max_demand = max_demand
         self.max_distance = max_distance
@@ -50,11 +51,11 @@ class InstanceGenerator:
         #     distance_matrix[i][j] = dist
         ''''''
 
-        demand = {i: 0 if i not in No else np.random.randint(1, self.max_demand+1)/10 for i in N} # Demand per customer
+        demand = {i: 0 if i not in No else np.random.randint(1, self.max_demand+1) for i in N} # Demand per customer
 
         M = list(np.arange(1, self.n_vehicles + 1))  # Set of vehicles
 
-        load_capacity = 3  # Load capacity per vehicle
+        load_capacity = self.vehicle_capacity  # Load capacity per vehicle
         
         return N, demand, load_capacity, distance, coordinates
 

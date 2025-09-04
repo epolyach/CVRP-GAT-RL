@@ -5,7 +5,7 @@ logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
-def instance_loader(config, batch_size, save_to_csv):
+def instance_loader(config, batch_size, save_to_csv, vehicle_capacity=3):
     
     
     # Extract values for x and y from the first configuration in the list
@@ -15,8 +15,8 @@ def instance_loader(config, batch_size, save_to_csv):
     # Create the filename
     filename = f'instances\\Nodes{x}_Instances{y}.csv'
     
-    # Instantiate the InstanceGenerator class
-    generator = InstanceGenerator(random_seed=42)   
+    # Instantiate the InstanceGenerator class with custom vehicle capacity
+    generator = InstanceGenerator(vehicle_capacity=vehicle_capacity, random_seed=42)   
     
     # Generate the instances based on the configuration
     data_loader = generator.get_dataloader_memory(config, batch_size, save_to_csv, filename=filename)
@@ -35,5 +35,5 @@ if __name__ == '__main__':
     ]
     batch_size = 1
     save_to_csv = True
-    instance_loader(config, batch_size, save_to_csv)
+    instance_loader(config, batch_size, save_to_csv, vehicle_capacity=30)
     
