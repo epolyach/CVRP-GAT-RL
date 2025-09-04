@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+gpu_env/
+env/
+ENV/
+
+# PyTorch
+*.pth
+*.pt
+checkpoints/
+models/
+
+# Data files
+*.pkl
+*.json.gz
+data/
+datasets/
+
+# Logs
+*.log
+logs/
+nohup.out
+*.out
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Results that might be large
+results/*/models/
+results/*/checkpoints/
+results/*/logs/
+
+# Keep documentation and small result files
+!results/*/plots/
+!results/*/*.md
+!results/*/*.txt

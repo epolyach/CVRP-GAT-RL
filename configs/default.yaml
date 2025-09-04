@@ -1,0 +1,100 @@
+# Default configuration loaded first and deep-merged with any provided config
+# Put all stable/tuning parameters here. Per-experiment configs override only what they study.
+
+# Working directory (will usually be overridden by scale-specific config)
+working_dir_path: "results/default"
+
+# =============================
+# Core CVRP problem parameters
+# =============================
+problem:
+  num_customers: 20         # Default customers (excluding depot)
+  vehicle_capacity: 30      # Integer capacity
+  demand_range: [1, 10]     # Integer demands [min, max]
+  coord_range: 100          # Coordinates 0..coord_range, then normalized to [0,1]
+  instance_types: ["random"]  # Instance types: random, clustered, radial, grid, mixed
+
+# =============================
+# Training parameters
+# =============================
+training:
+  num_batches_per_epoch: 15 # Default batches per epoch
+  batch_size: 512           # Default batch size
+  num_epochs: 100           # Default number of epochs
+  learning_rate: 1e-4       # Base LR
+  validation_frequency: 4   # Run validation every N epochs
+
+# =============================
+# Rollout baseline (optional)
+# =============================
+baseline:
+  type: "rollout"
+  eval_batches: 4         # Slight reduction from 5
+  update:
+    enabled: true
+    frequency: 3          # Check every 3 epochs instead of 4
+    significance_test: true  
+    p_value: 0.10         # More lenient from 0.05
+
+
+# =============================
+# Experiment control
+# =============================
+experiment:
+  random_seed: 42
+  device: "cpu"
+  use_advanced_features: true
+
+# =============================
+# Model architecture (shared)
+# =============================
+model:
+  input_dim: 3
+  hidden_dim: 256
+  num_heads: 4
+  num_layers: 4
+  transformer_dropout: 0.1
+  feedforward_multiplier: 2
+
+
+# === NEW ENHANCED FEATURES ===
+training_advanced:
+  # Adaptive temperature scheduling (optimized for differentiation)
+  use_adaptive_temperature: true
+  temp_start: 2.5         # Reduced from 3.0
+  temp_min: 0.15          # Raised from 0.1
+  temp_adaptation_rate: 0.18  # Slightly slower from 0.2
+  
+  # Standard entropy
+  entropy_coef: 0.03      # Slight increase from 0.02
+  entropy_min: 0.002      # Slight increase from 0.001
+
+  # Better optimizer
+  weight_decay: 0.0001
+  gradient_clip_norm: 2.0
+  
+  # Learning rate scheduling  
+  use_lr_scheduling: true
+  scheduler_type: "cosine"
+  min_lr: 0.000001
+  
+  # Early stopping
+  use_early_stopping: true
+  early_stopping_patience: 10
+  early_stopping_delta: 0.0001
+  
+
+# =============================
+# Inference and evaluation
+# =============================
+inference:
+  default_temperature: 1.0
+  max_steps_multiplier: 2
+
+
+# =============================
+# Logging
+# =============================
+logging:
+  level: "INFO"
+  format: "%(message)s"
